@@ -86,6 +86,13 @@
   \end{beamercolorbox}}%
   \vskip0pt%
 }
+
+
+\tikzstyle{cloudconn} = [draw=black, inner sep=0pt,
+       line width=0.25mm,{Latex[length=2.5mm, width=1.5mm]}-{Latex[length=2.5mm, width=1.5mm]}]
+
+\tikzstyle{arrowconn} = [draw=black, inner sep=0pt,
+       line width=0.25mm,-{Latex[length=2.5mm, width=1.5mm]}]
 \makeatother
 
 \date[QMUL IADS]{Presentation to QMUL IADS}
@@ -256,14 +263,35 @@ single arrow head extend=.3cm,}}
 }
 
 \frame{
-    \frametitle{Social network analysis}
+    \frametitle{Temporal networks}
 \begin{block}{Social network $\rightarrow$ graph $G$ }
 We can form a graph from a social network by creating an edge between two users if they are friends or if they ``mention" each other. 
 \end{block}
 \pause
 \begin{block}{Social network $\rightarrow$ many graphs $G(t,\tau)$}
-There is no such thing as \alert{``the twitter graph"}. The graph varies hugely depending on the \alert{time} and \alert{timescale}.
+There is no such thing as \alert{``the twitter graph"}. The graph varies hugely depending on the \alert{time} $t$  and \alert{timescale} $\tau$.
 \end{block}
+\pause
+\centering{
+\begin{tikzpicture}%[show background grid]
+\draw[white] (-5,-2) rectangle (5,2);
+\node <1-> [inner sep=0pt] at (-5,-1) (fc) {\includegraphics[width=1.3cm]{felix}};
+\node <1-> [inner sep=0pt] at (-2.5,0) (ih) {\includegraphics[width=1.3cm]{imane}};
+\node <1-> [inner sep=0pt] at (0,.5) (bs) {\includegraphics[width=1.3cm]{ben}};
+\node <1-7> [inner sep=0pt] at (2.5,-0.5) (rc) {\includegraphics[width=1.3cm]{rich}};
+\node <1-> [inner sep=0pt] at (5,1) (na) {\includegraphics[width=1.3cm]{naomi}};
+\node <8-> [inner sep=0pt] at (2.5,-0.5) (rc) {\includegraphics[width=1.6cm]{covid}};
+\path[draw] <4-7> (ih) edge[cloudconn] (fc);
+\path[draw] <5-7> (ih) edge[cloudconn] (bs);
+\path[draw] <6-7> (rc) edge[cloudconn] (na);
+\path[draw] <7> (rc) edge[cloudconn] (bs);
+\path[draw] <9-> (ih) edge[cloudconn] (fc);
+\path[draw] <10-> (ih) edge[cloudconn] (bs);
+\path[draw] <11-> (rc) edge[cloudconn] (na);
+\path[draw] <12> (rc) edge[cloudconn] (bs);
+
+\end{tikzpicture}
+}
 }
 
 \frame{
@@ -274,8 +302,9 @@ The graph $G(t,\tau)$ is defined by the set of all edges $i,j$ where $i$ and $j$
 \centering{
 \begin{tikzpicture}%[show background grid]
 \node<1-> at (0,0){\includegraphics[width=0.8\textwidth]{windowing_schematic}};
-\node<2-> at (0,0) [platform,anchor= south] {Intuition: Increasing $\tau$ will add nodes and density};
-\node<3-> at (0,-1) [platform,anchor= south] {Intuition: Decreasing $\tau$ will reduce nodes and density};
+\node<2-> at (0,1) [platform,anchor= south] {Note: define a user/edge as \alert{new} if this is the first window it is seen};
+\node<3-> at (0,0) [platform,anchor= south] {Intuition: Increasing $\tau$ will add nodes and density};
+
 \end{tikzpicture}
 }
 }
@@ -291,11 +320,20 @@ The graph $G(t,\tau)$ is defined by the set of all edges $i,j$ where $i$ and $j$
 
 \section{Analysis}
 
-\tikzstyle{cloudconn} = [draw=black, inner sep=0pt,
-       line width=0.25mm,{Latex[length=2.5mm, width=1.5mm]}-{Latex[length=2.5mm, width=1.5mm]}]
+\frame{
+    \frametitle{Some research questions for gab data}
 
-\tikzstyle{arrowconn} = [draw=black, inner sep=0pt,
-       line width=0.25mm,-{Latex[length=2.5mm, width=1.5mm]}]
+\begin{block}{What simple questions can we ask of the data}
+Remember our focus is \alert{structure} not \alert{content}. We are not (we cheat a little here at one point) digging into the content of messages.
+\end{block}
+\pause
+\begin{itemize}
+\item Is gab growing, what drives the growth?
+\item Is gab a ``social" network (friends interacting)?
+\item Is gab a ``community" (in a loose sense)?
+\item Is gab controlled by an ``elite"?
+\end{itemize}
+}
 
 \frame{
 \frametitle{What drives growth on gab?}
@@ -310,7 +348,7 @@ The graph $G(t,\tau)$ is defined by the set of all edges $i,j$ where $i$ and $j$
 \node<7> at (0,0) [platform,anchor= south] (e6) {01/03/18 -- Gilmore lawsuit against Alex Jones};
 \node at (-2.2,2.0) (e1p) {};
 \node at (1.3,2.0) (e2p) {};
-\node at (2.5,2.0) (e3p) {};
+\node at (2.55,2.0) (e3p) {};
 \node at (2.9,2.0) (e4p) {};
 \node at (3.2,2.0) (e5p) {};
 \node at (3.8,2.0) (e6p) {};
@@ -330,7 +368,14 @@ The graph $G(t,\tau)$ is defined by the set of all edges $i,j$ where $i$ and $j$
 \frametitle{Is gab a ``social" network?}
 \centering{
 \begin{tikzpicture}%[show background grid]
-\node<1> at (0,0){\includegraphics[width=0.8\textwidth]{edges}};
+\node<1-> at (0,0){\includegraphics[width=0.8\textwidth]{edges}};
+\node<2> at (0,0) [platform,anchor= south] (u1) {Half or more user interactions every day are new};
+\node<3> at (0,0) [platform,anchor= south] (u2) {More than 80\% of user-user interactions in a month new};
+\node<4> at (0,0) [platform,anchor= south] {Gab interactions are chiefly between ``strangers"};
+\node at (0,2.4) (u1p) {};
+\node at (0,3.1) (u2p) {};
+\path[draw] <2> (u1) edge[arrowconn] (u1p);
+\path[draw] <3> (u2) edge[arrowconn] (u2p);
 \end{tikzpicture}
 }
 }
@@ -344,7 +389,7 @@ The largest connected component (LCC) is the one with the most nodes.
 \end{block}
 \pause
 \begin{itemize}
-\item In a typical social network we can trace a path between most node pairs.
+\item Typical social network -- can trace a path between most node pairs.
 \item Rare sets of nodes interact only with each other. 
 \item LCC is size of the largest ``community" (in loosest sense).
 \item Sub graphs outside LCC have no connection at all with LCC.
@@ -355,10 +400,12 @@ The largest connected component (LCC) is the one with the most nodes.
 }
 
 \frame{
-\frametitle{Is gab a community?  Largest Connected Component}
+\frametitle{Is gab a community?  LCC (hour window)}
 \centering{
 \begin{tikzpicture}%[show background grid]
-\node<1> at (0,0){\includegraphics[width=0.8\textwidth]{lcc}};
+\node<1-> at (0,0){\includegraphics[width=0.8\textwidth]{lcc}};
+\node<2-> at (0,1) [platform,anchor= south] {When we look at hour long windows, LCC forms and shatters daily};
+\node<3> at (0,-1) [platform,anchor= south] {We can see regime change -- connected network to isolated sub networks};
 \end{tikzpicture}
 }
 }
